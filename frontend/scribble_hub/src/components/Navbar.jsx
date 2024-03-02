@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { GoSearch } from "react-icons/go";
 const Navbar = () => {
-  const user = 1;
+  const user = null;
   return (
     <div className="flex items-center justify-between px-6 md:px-[200px] py-4">
-      <h1 className="font-bold text-lg md:text-xl">
-        <Link to="/">SCRIBBLE HUB</Link>
+      <h1 className="font-bold text-lg md:text-xl hover:text-teal-500 transition duration-300 ease-in-out">
+        <Link to="/">SCRIBBLE</Link>
       </h1>
       <div className="flex justify-center items-center space-x-0">
         <p>
