@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/users");
-
+const postRouter = require("./routes/posts");
+const commentRouter = require("./routes/comments");
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use((req,res,next) => {
 });
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
+app.use("/api/posts", postRouter);
+app.use("/api/comments", commentRouter);
 
 
 // Database Connection and Config
