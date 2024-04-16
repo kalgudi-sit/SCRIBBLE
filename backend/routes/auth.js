@@ -41,11 +41,14 @@ router.post("/login", async (req, res) => {
 
 // Logout
 router.get("/logout", async (req, res) => {
-    try {
-        return res.clearCookie("token", { sameSite: "none", secure: true }).status(200).json("User logged out successfully");
-    } catch (error) {
-        return res.status(500).json("Could not log out user");
-    }
+  try {
+    return res
+      .clearCookie("token", { sameSite: "none", secure: true })
+      .status(200)
+      .json("User logged out successfully");
+  } catch (error) {
+    return res.status(500).json("Could not log out user");
+  }
 });
 
 module.exports = router;
