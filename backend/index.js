@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/users");
 const postRouter = require("./routes/posts");
@@ -11,6 +12,7 @@ const app = express();
 // Middlewares
 dotenv.config();
 app.use(express.json());
+app.use(cookieParser());
 app.use((req,res,next) => {
     console.log(req.path + " " + req.method);
     next();
@@ -30,15 +32,6 @@ const connectDB = async () => {
         console.log(error.message);
     }
 }
-
-app.get("/", (req,res) => {
-    const data = {
-        name: "Abhishek",
-        age: 19,
-        college: "SIT",
-    }
-    res.status(200).json(data);
-})
 
 app.listen(process.env.PORT, () => {
     connectDB();
