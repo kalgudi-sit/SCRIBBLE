@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../models/Post");
+const verifyToken = require("../verifyToken");
 
 // Create post
-router.post("/create", async (req, res) => {
+router.post("/create", verifyToken, async (req, res) => {
     try {
         const userPost = new Post(req.body);
         const savedPost = await userPost.save();
@@ -14,7 +15,7 @@ router.post("/create", async (req, res) => {
 });
 
 // Update post
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyToken, async (req, res) => {
     try {
         const updatedPost = await Post.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
         return res.status(200).json(updatedPost);
@@ -24,7 +25,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete post
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
     try {
         const deletedPost = await Post.findByIdAndDelete(req.params.id);
         return res.status(200).json(deletedPost);
@@ -43,10 +44,14 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// Get all posts 
+// Get all posts -or- search post
 router.get("/", async (req, res) => {
+    const searchCriteria = req.query.search || "" ;
     try {
-        const allPosts = await Post.find();
+        const searchFilter = {
+            title: { $regex: searchCriteria, $options: "i" }
+        }
+        const allPosts = await Post.find(req.query ? searchFilter : null);
         return res.status(200).json(allPosts);
     } catch (error) {
         return res.status(500).json(error);
