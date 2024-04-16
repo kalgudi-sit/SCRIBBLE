@@ -23,11 +23,13 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res.status(404).json("User Not Found");
+      // Validate if user registered
+      return res.status(404).json({ message: "User Not Found" });
     }
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) {
-      return res.status(401).json("Wrong Credentials");
+      // Validate user password
+      return res.status(401).json({ message: "Wrong Credentials" });
     }
     const token = jwt.sign({ id: user._id }, process.env.SECRET, {
       expiresIn: "3d",

@@ -4,10 +4,11 @@ const User = require("../models/User");
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 const bcrypt = require("bcrypt");
+const verifyToken = require("../verifyToken");
 
 
 // Update User
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyToken, async (req, res) => {
     try {
         // Update any user information
         // If User modifies password, hash the new password
@@ -24,7 +25,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete User
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
         await Post.deleteMany({ userId: req.params.id });
