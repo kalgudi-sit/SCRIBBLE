@@ -1,7 +1,38 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+import { useState } from "react";
+import axios from "axios";
+import { URL } from "./../url";
 
 const Register = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const navigate = useNavigate();
+
+  console.log(username);
+  console.log(email);
+  console.log(password);
+
+  const handleRegister = async () => {
+    try {
+      const res = await axios.post(URL + "/api/auth/register", {
+        username,
+        email,
+        password,
+      });
+      setUsername(res.data.username);
+      setEmail(res.data.email);
+      setPassword(res.data.password);
+      setError(false);
+      navigate("/login");
+    } catch (error) {
+      setError(true);
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="flex items-center justify-between px-6 md:px-[200px] py-4">
@@ -19,20 +50,27 @@ const Register = () => {
             className="w-full px-4 py-2 border-2 border-black outline-0 rounded-lg"
             type="text"
             placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
           />
           <input
             className="w-full px-4 py-2 border-2 border-black outline-0 rounded-lg"
             type="text"
             placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             className="w-full px-4 py-2 border-2 border-black outline-0 rounded-lg"
             type="password"
             placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="w-full text-lg px-4 py-4 font-bold text-white bg-black rounded-lg hover:bg-blue-600">
+          <button
+            onClick={handleRegister}
+            className="w-full text-lg px-4 py-4 font-bold text-white bg-black rounded-lg hover:bg-blue-600"
+          >
             Register
           </button>
+          {error && <h3 className="text-red-500">Something went wrong.</h3>}
           <div className="flex justify-center items-center space-x-2">
             <h1>Already have an account?</h1>
             <Link to="/login" className=" text-blue-600">
