@@ -1,7 +1,19 @@
 import { Link } from "react-router-dom";
 import { GoSearch } from "react-icons/go";
+import { FaBars } from "react-icons/fa6";
+import { useContext, useState } from "react";
+import Menu from "./Menu";
+import { UserContext } from "../context/UserContext";
+
 const Navbar = () => {
-  const user = null;
+  const [menu, setMenu] = useState(false);
+  const { user } = useContext(UserContext);
+  
+  const toggleMenu = () => {
+    console.log(user);
+    setMenu(!menu);
+  };
+
   return (
     <div className="flex items-center justify-between px-6 md:px-[200px] py-4 ">
       <h1 className="font-bold text-lg md:text-xl hover:text-teal-500 transition duration-300 ease-in-out">
@@ -13,7 +25,7 @@ const Navbar = () => {
         </p>
         <input className="outline-none px-3" placeholder="Search a post" />
       </div>
-      <div className="flex items-center justify-center space-x-2 md:space-x-5">
+      <div className="hidden md:flex items-center justify-center space-x-2 md:space-x-5">
         {user ? (
           <h3 className="hover:text-blue-600">
             <Link to="/write">Write</Link>
@@ -24,14 +36,24 @@ const Navbar = () => {
           </h3>
         )}
         {user ? (
-          <h3 className="hover:text-blue-600">
-            <Link to="/profile">Profile</Link>
+          <h3 onClick={toggleMenu} className="hover:text-blue-600">
+            <div>
+              <p><FaBars /></p>
+              {menu && <Menu />}
+            </div>
           </h3>
         ) : (
           <h3 className="hover:text-blue-600">
             <Link to="/register">Register</Link>
           </h3>
         )}
+      </div>
+      <div
+        onClick={toggleMenu}
+        className="md:hidden text-xl hover:cursor-pointer"
+      >
+        <p><FaBars /></p>
+        {menu && <Menu />}
       </div>
     </div>
   );
