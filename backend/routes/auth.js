@@ -31,9 +31,9 @@ router.post("/login", async (req, res) => {
       // Validate user password
       return res.status(401).json({ message: "Wrong Credentials" });
     }
-    const token = jwt.sign({ id: user._id }, process.env.SECRET, {
+    const token = jwt.sign({ id: user._id, username: user.username , email: user.email }, process.env.SECRET, {
       expiresIn: "3d",
-    });
+    }); // first argument is payload
     const { password, ...info } = user._doc; // password is saperated, not shared with user
     return res.cookie("token", token).status(200).json(info);
   } catch (error) {
@@ -52,5 +52,17 @@ router.get("/logout", async (req, res) => {
     return res.status(500).json("Could not log out user");
   }
 });
+
+// Refetch => To make sure user stays logged in even after refresh
+router.get("/refetch", async (req, res) => {
+  const token = req.cookies.token;
+  jwt.verify(token, process.env.SECRET, {}, (err, data) => {
+    if(err) {
+      return res.status(404).json(err);
+    }
+    console.log(data);
+    return res.status(200).json(data);
+  })
+})
 
 module.exports = router;
