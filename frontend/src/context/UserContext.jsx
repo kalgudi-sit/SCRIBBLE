@@ -11,6 +11,7 @@ export const UserContextProvider = ({ children }) => {
     const handleRefresh = async () => {
       try {
         const res = await axios.get(URL + "/api/auth/refetch", { withCredentials: true });
+        setUser(res.data);
         console.log(res);
       } catch (error) {
         console.log(error);
