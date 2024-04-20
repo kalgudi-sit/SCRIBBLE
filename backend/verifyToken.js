@@ -10,9 +10,9 @@ const verifyToken = (req, res, next) => {
             return res.status(403).json({ message: "Invalid token. "});
         }
         console.log("Passed");
-        req.userId = data.id;
+        req.userId = data._id;
         next();
-    })
+    });
 }
 
 module.exports = verifyToken;
