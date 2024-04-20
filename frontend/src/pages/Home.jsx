@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import HomePost from "../components/HomePost";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { URL } from "./../url";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Loader from "../components/Loader";
+import { UserContext } from "../context/UserContext";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [noResults, setNoResults] = useState(false);
   const [loader, setLoader] = useState(false);
   const { search } = useLocation();
-  console.log(search);
+  const { user } = useContext(UserContext);
+  // console.log(search);
+  // console.log(user);
 
   useEffect(() => {
     setLoader(true);
@@ -40,13 +43,19 @@ const Home = () => {
           <div className="h-[40vh] flex justify-center items-center">
             <Loader />
           </div>
-        ) : (!noResults ? (
+        ) : !noResults ? (
           posts.map((post) => {
-            return <HomePost key={post._id} post={post} />;
+            return (
+              <>
+                <Link to={user ? `/posts/post/${post._id}` : "/login"}>
+                  <HomePost key={post._id} post={post} />
+                </Link>
+              </>
+            );
           })
         ) : (
           <h3 className="text-center mt-16 font-bold">No posts available</h3>
-        ))}
+        )}
       </div>
       <Footer />
     </>
