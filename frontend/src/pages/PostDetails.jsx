@@ -6,7 +6,7 @@ import { BiEdit } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { URL } from "./../url";
+import { IF, URL } from "./../url";
 import { UserContext } from "../context/UserContext";
 import Loader from "../components/Loader";
 
@@ -15,14 +15,14 @@ const PostDetails = () => {
   const [loader, setLoader] = useState(false);
   const postId = useParams().id;
   const { user } = useContext(UserContext);
-  console.log(postId);
+  // console.log(postId);
 
   useEffect(() => {
     const fetchPost = async () => {
       setLoader(true);
       try {
         const res = await axios.get(URL + "/api/posts/" + postId);
-        console.log(res);
+        // console.log(res);
         setPost(res.data);
         setLoader(false);
       } catch (error) {
@@ -48,10 +48,10 @@ const PostDetails = () => {
             </h1>
             {user?._id === post?.userId && (
               <div className="flex justify-center items-center space-x-2">
-                <p>
+                <p className="hover:text-blue-600 hover:cursor-pointer p-2 m-2 text-xl">
                   <BiEdit />
                 </p>
-                <p>
+                <p className="hover:text-red-500 hover:cursor-pointer p-2 m-2 text-xl">
                   <MdDelete />
                 </p>
               </div>
@@ -64,7 +64,7 @@ const PostDetails = () => {
               <p>{new Date(post.updatedAt).toString().slice(16, 24)}</p>
             </div>
           </div>
-          <img src={post.photo} alt="" className="w-full mx-auto mt-8" />
+          <img src={IF + post.photo} alt="" className="w-full mx-auto mt-8" />
           <p className="mt-8 mx-auto">{post.description}</p>
 
           {/* Categories */}

@@ -1,10 +1,12 @@
+import { IF } from "../url"
+
 const HomePost = ({post}) => {
   return (
     <div className="w-full flex mt-8 space-x-5">
       {/* LeftSide */}
       <div className="w-[35%] h-[200px] flex justify-center items-center">
         <img
-          src={post.photo}
+          src={IF + post.photo}
           alt="post image"
           className="h-full w-full object-cover"
         />
