@@ -11,10 +11,10 @@ const Navbar = () => {
   const { user } = useContext(UserContext);
   const path = useLocation().pathname;
   const navigate = useNavigate();
-  console.log(path);
+  // console.log(path);
 
   const toggleMenu = () => {
-    console.log(user);
+    // console.log(user);
     setMenu(!menu);
   };
 

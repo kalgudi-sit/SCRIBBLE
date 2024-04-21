@@ -9,7 +9,7 @@ const Menu = () => {
   const handleLogout = async () => {
     try {
       const res = await axios(URL + "/api/auth/logout", { withCredentials: true });
-      console.log(res);
+      // console.log(res);
       setUser(null);
     } catch (error) {
       console.log(error);

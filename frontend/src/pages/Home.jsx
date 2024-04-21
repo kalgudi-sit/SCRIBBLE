@@ -23,7 +23,7 @@ const Home = () => {
       try {
         const res = await axios.get(URL + "/api/posts" + search);
         // search query extracted from url, made to hit necessary api endpoint
-        console.log(res);
+        // console.log(res);
         setPosts(res.data);
         res.data.length === 0 ? setNoResults(true) : setNoResults(false);
         setLoader(false);

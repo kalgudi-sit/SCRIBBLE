@@ -11,9 +11,9 @@ const Register = () => {
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  console.log(username);
-  console.log(email);
-  console.log(password);
+  // console.log(username);
+  // console.log(email);
+  // console.log(password);
 
   const handleRegister = async () => {
     try {
