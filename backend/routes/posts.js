@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../models/Post");
 const verifyToken = require("../verifyToken");
+const Comment = require("../models/Comment");
 
 // Create post
 router.post("/create", verifyToken, async (req, res) => {
@@ -28,6 +29,7 @@ router.put("/:id", verifyToken, async (req, res) => {
 router.delete("/:id", verifyToken, async (req, res) => {
     try {
         const deletedPost = await Post.findByIdAndDelete(req.params.id);
+        const deletedComments = await Comment.deleteMany({postId: req.params.id});
         return res.status(200).json(deletedPost);
     } catch (error) {
         return res.status(500).json(error);

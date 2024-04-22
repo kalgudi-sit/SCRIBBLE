@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Comments from "../components/Comments";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -15,6 +15,7 @@ const PostDetails = () => {
   const [loader, setLoader] = useState(false);
   const postId = useParams().id;
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   // console.log(postId);
 
   useEffect(() => {
@@ -32,6 +33,17 @@ const PostDetails = () => {
     };
     fetchPost();
   }, [postId]);
+
+  const handleDeletePost = async () => {
+    try {
+      const res = await axios.delete(URL + "/api/posts/" + postId, { withCredentials: true });
+      console.log(res);
+      navigate("/");
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div>
@@ -51,7 +63,7 @@ const PostDetails = () => {
                 <p className="hover:text-blue-600 hover:cursor-pointer p-2 m-2 text-xl">
                   <BiEdit />
                 </p>
-                <p className="hover:text-red-500 hover:cursor-pointer p-2 m-2 text-xl">
+                <p onClick={handleDeletePost} className="hover:text-red-500 hover:cursor-pointer p-2 m-2 text-xl">
                   <MdDelete />
                 </p>
               </div>
