@@ -14,7 +14,7 @@ const HomePost = ({post}) => {
       {/* RightSide */}
       <div className="flex flex-col w-[65%]">
         <h1 className="text-lg font-bold md:mb-1 mb-1 md:text-2xl">
-          {post.title.toUpperCase()}
+          {post.title}
         </h1>
         <div className="flex mb-2 text-sm font-semibold text-gray-500 items-center justify-between md:mb-4">
           <p>@{post.username}</p>
