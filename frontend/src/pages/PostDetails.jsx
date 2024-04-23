@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import { BiEdit } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import { IF, URL } from "./../url";
 import { UserContext } from "../context/UserContext";
 import Loader from "../components/Loader";
@@ -13,6 +13,8 @@ import Loader from "../components/Loader";
 const PostDetails = () => {
   const [post, setPost] = useState({});
   const [loader, setLoader] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState("");
   const postId = useParams().id;
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
@@ -31,23 +33,57 @@ const PostDetails = () => {
         setLoader(true);
       }
     };
+
     fetchPost();
+    fetchComments();
   }, [postId]);
 
-  const handleDeletePost = async () => {
+  const fetchComments = async () => {
     try {
-      const res = await axios.delete(URL + "/api/posts/" + postId, { withCredentials: true });
+      const res = await axios.get(URL + "/api/comments/post/" + postId);
       console.log(res);
-      navigate("/");
-      
+      setComments(res.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const handleDeletePost = async () => {
+    try {
+      const res = await axios.delete(URL + "/api/posts/" + postId, {
+        withCredentials: true,
+      });
+      console.log(res);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleUpdatePost = () => {
     navigate("/edit/" + postId);
-  }
+  };
+
+  const handlePostComment = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        URL + "/api/comments/create",
+        {
+          comment: comment,
+          author: user.username,
+          postId: postId,
+          userId: user._id,
+        },
+        { withCredentials: true }
+      );
+      // console.log(res);
+      setComment("");
+      fetchComments();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -64,10 +100,16 @@ const PostDetails = () => {
             </h1>
             {user?._id === post?.userId && (
               <div className="flex justify-center items-center space-x-2">
-                <p onClick={handleUpdatePost} className="hover:text-blue-600 hover:cursor-pointer p-2 m-2 text-xl">
+                <p
+                  onClick={handleUpdatePost}
+                  className="hover:text-blue-600 hover:cursor-pointer p-2 m-2 text-xl"
+                >
                   <BiEdit />
                 </p>
-                <p onClick={handleDeletePost} className="hover:text-red-500 hover:cursor-pointer p-2 m-2 text-xl">
+                <p
+                  onClick={handleDeletePost}
+                  className="hover:text-red-500 hover:cursor-pointer p-2 m-2 text-xl"
+                >
                   <MdDelete />
                 </p>
               </div>
@@ -100,15 +142,9 @@ const PostDetails = () => {
           {/* Comments */}
           <div className="flex flex-col mt-4">
             <h3 className=" font-semibold mt-6 mb-4"> Comments: </h3>
-            <Comments />
-            <Comments />
-            <Comments />
-            <Comments />
-            <Comments />
-            <Comments />
-            <Comments />
-            <Comments />
-            <Comments />
+            {comments?.map((comment) => {
+              return <Comments key={comment._id} comment={comment} />;
+            })}
 
             {/* Write a comment */}
             <div className="flex flex-col mt-4 md:flex-row w-full">
@@ -116,8 +152,13 @@ const PostDetails = () => {
                 placeholder="Write a comment"
                 type="text"
                 className="md:w-[80%] outline-none px-4 mt-4 md:mt-0"
+                onChange={(e) => setComment(e.target.value)}
+                value={comment}
               />
-              <button className="bg-black text-white px-4 py-2 md:w-[20%] mt-4 md:mt-0 rounded-lg hover:bg-blue-600">
+              <button
+                onClick={handlePostComment}
+                className="bg-black text-white px-4 py-2 md:w-[20%] mt-4 md:mt-0 rounded-lg hover:bg-blue-600"
+              >
                 Add Comment
               </button>
             </div>
