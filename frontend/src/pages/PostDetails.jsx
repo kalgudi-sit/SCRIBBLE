@@ -143,7 +143,7 @@ const PostDetails = () => {
           <div className="flex flex-col mt-4">
             <h3 className=" font-semibold mt-6 mb-4"> Comments: </h3>
             {comments?.map((comment) => {
-              return <Comments key={comment._id} comment={comment} />;
+              return <Comments key={comment._id} comment={comment} post={post} fetchComments={fetchComments}/>;
             })}
 
             {/* Write a comment */}
