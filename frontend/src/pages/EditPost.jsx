@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { MdOutlineCancel } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { URL } from "../url";
+import { UserContext } from "../context/UserContext";
 
 const EditPost = () => {
   const [categoryField, setCategoryField] = useState("");
   const [categories, setCategories] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [file, setFile] = useState(null);
+  const postId = useParams().id;
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const addCategory = (e) => {
     e.preventDefault();
@@ -24,18 +34,80 @@ const EditPost = () => {
     updatedDeleteCategories.splice(index, 1);
     setCategories(updatedDeleteCategories);
   };
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const res = await axios.get(URL + "/api/posts/" + postId);
+        // console.log(res);
+        setTitle(res.data.title);
+        setDescription(res.data.description);
+        setFile(res.data.photo);
+        setCategories(res.data.categories);
+      } catch (error) {
+        w;
+        console.log(error);
+      }
+    };
+    fetchPost();
+  }, []);
+
+  const handlePostUpdate = async (e) => {
+    e.preventDefault();
+    const post = {
+      title,
+      description,
+      username: user.username,
+      userId: user._id,
+      categories: categories,
+    };
+
+    if (file) {
+      const data = new FormData();
+      const filename = Date.now() + file?.name;
+      data.append("img", filename);
+      data.append("file", file);
+      post.photo = filename;
+
+      // image upload
+      try {
+        const imageUpload = await axios.post(URL + "/api/upload", data);
+        console.log(imageUpload.data);
+      } catch (error) {
+        console.log(error);
+      }
+
+      // post update
+      try {
+        const res = await axios.put(URL + "/api/posts/" + postId, post, {
+          withCredentials: true,
+        });
+        console.log(res);
+        navigate("/posts/post/" + res.data._id);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <div>
       <Navbar />
       <div className="px-6 md:px-[200px]">
-        <h1 className="font-bold md:text-2xl text-xl mt-8">Create a Post</h1>
+        <h1 className="font-bold md:text-2xl text-xl mt-8">Update a Post</h1>
         <form className="w-full flex flex-col space-y-4 md:space-8 mt-4">
           <input
             type="text"
             placeholder="Post title"
             className="px-4 py-2 outline-none"
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
           />
-          <input type="file" className="px-4" />
+          <input
+            onChange={(e) => setFile(e.target.files[0])}
+            type="file"
+            className="px-4"
+          />
 
           {/* Categories */}
           <div className="flex flex-col">
@@ -81,8 +153,13 @@ const EditPost = () => {
             cols={30}
             className="px-4 py-2 outline-none"
             placeholder="Enter post description"
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
           />
-          <button className=" rounded-lg w-full bg-black md:w-[20%] mx-auto text-white font-semibold px-4 py-2 text-lg md:text-xl hover:bg-blue-600">
+          <button
+            onClick={handlePostUpdate}
+            className=" rounded-lg w-full bg-black md:w-[20%] mx-auto text-white font-semibold px-4 py-2 text-lg md:text-xl hover:bg-blue-600"
+          >
             Edit Post
           </button>
         </form>

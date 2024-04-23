@@ -45,6 +45,10 @@ const PostDetails = () => {
     }
   }
 
+  const handleUpdatePost = () => {
+    navigate("/edit/" + postId);
+  }
+
   return (
     <div>
       <Navbar />
@@ -60,7 +64,7 @@ const PostDetails = () => {
             </h1>
             {user?._id === post?.userId && (
               <div className="flex justify-center items-center space-x-2">
-                <p className="hover:text-blue-600 hover:cursor-pointer p-2 m-2 text-xl">
+                <p onClick={handleUpdatePost} className="hover:text-blue-600 hover:cursor-pointer p-2 m-2 text-xl">
                   <BiEdit />
                 </p>
                 <p onClick={handleDeletePost} className="hover:text-red-500 hover:cursor-pointer p-2 m-2 text-xl">
